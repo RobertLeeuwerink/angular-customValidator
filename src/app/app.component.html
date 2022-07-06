@@ -1,0 +1,43 @@
+<form [formGroup]="form">
+  <div class="row">
+    <div class="col-md-6 mb-3 input-gap" *ngIf="editMode | async">
+      <input formControlName="userName" placeholder="first name" />
+      <input formControlName="userLastName" placeholder="last name" />
+    </div>
+    <div class="col-md-6 mb-3" *ngIf="!(editMode | async)">
+      <div>
+        <b>First Name:</b> {{ form.value.userName }}
+        {{ form.controls.userName.errors | json }}
+      </div>
+      <div>
+        <b>Last Name:</b> {{ form.value.userLastName }}
+        {{ form.controls.userLastName.errors | json }}
+      </div>
+    </div>
+  </div>
+  <div class="btn-toolbar float-right btn-gap">
+    <button class="btn btn-info mr-1" (click)="updateUser()">Update</button>
+    <button class="btn btn-dark" type="reset" (click)="reset()">Clear</button>
+    <button class="btn btn-dark" (click)="toggleEditor()">
+      {{ (editMode | async) ? 'Stop editing' : 'Edit content' }}
+    </button>
+    <button
+      *ngIf="form.controls.userName.errors?.backend?.id"
+      class="btn btn-dark"
+      (click)="removeValidator(form.controls.userName.errors?.backend?.id)"
+    >
+      {{ 'I have read and understood the error, clear error.' }}
+    </button>
+  </div>
+</form>
+<div *ngIf="!!newUser?.userName">
+  new user:
+  <br />
+  <b>First Name:</b> {{ newUser.userName }} <b>Last Name:</b>
+  {{ newUser.userLastName }}
+
+  <pre>
+    {{ form.getRawValue() | json }}
+    {{ form.controls.userName.errors | json }}
+  </pre>
+</div>

@@ -1,0 +1,24 @@
+p {
+  font-family: Lato;
+}
+
+form {
+  display: grid;
+  width: 20rem;
+  margin-top: 25vh;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.btn-gap {
+  display: grid;
+  gap: 0.5rem;
+  grid-auto-flow: column;
+}
+.input-gap {
+  display: grid;
+  gap: 0.5rem;
+}
+input {
+  width: 100% !important;
+}
