@@ -8,6 +8,7 @@ import {
   AbstractControl,
 } from '@angular/forms';
 import { BehaviorSubject, Observable, of } from 'rxjs';
+import { ApiMsgValidator } from './ApiMsg.validator';
 import { LogService } from './log.service';
 
 @Component({
@@ -29,7 +30,7 @@ export class AppComponent {
     return this.form.get('userName');
   }
 
-  constructor(private logService: LogService) {
+  constructor(private apiMsgValidator: ApiMsgValidator) {
     this.form.valueChanges.subscribe(() => console.log(this.form));
   }
 
@@ -55,6 +56,15 @@ export class AppComponent {
     this.form.updateValueAndValidity();
   }
 
+  addAsyncError() {
+    const id = '17';
+    const message = 'Luke I am your father, come join me on the backend team';
+    this.apiMsgValidator.addApiMsg(id, message);
+    this.form.controls['userName'].setErrors({ backend: { id, message, async: true } });
+    this.form.controls['userName'].addAsyncValidators(this.apiMsgValidator.validate);
+    this.form.updateValueAndValidity();
+  }
+
   toggleEditor() {
     this.editMode.next(!this.editMode.getValue());
     console.log(this.form);
@@ -64,6 +74,9 @@ export class AppComponent {
     this.form.controls['userName'].removeValidators(this.validations[id]);
     this.form.controls['userName'].setErrors({ backend: null });
     this.form.updateValueAndValidity();
+  }
+  removeAsyncValidator(id: string) {
+    this.apiMsgValidator.removeApiMsg(id);
   }
 }
 
