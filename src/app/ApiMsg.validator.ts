@@ -1,24 +1,24 @@
-import { Injectable } from '@angular/core';
-import {
-  AbstractControl,
-  AsyncValidator,
-  ValidationErrors,
-} from '@angular/forms';
-import { BehaviorSubject, catchError, map, Observable, of } from 'rxjs';
+import { Injectable } from "@angular/core";
+import { AsyncValidator, AbstractControl, ValidationErrors } from "@angular/forms";
+import { BehaviorSubject, Observable, map, catchError, of } from "rxjs";
+
+export interface Validations {
+  [id: string]: any
+}
 
 @Injectable({ providedIn: 'root' })
 export class ApiMsgValidator implements AsyncValidator {
-  private validationsAsync = new BehaviorSubject<any>({});
+  private validationsAsync = new BehaviorSubject<Validations>({});
 
   constructor() {}
 
-  addApiMsg(id, message) {
+  addApiMsg(id: string, message: string) {
     const validations = { ...this.validationsAsync.getValue() };
     validations[id] = { id, message };
     this.validationsAsync.next(validations);
   }
 
-  removeApiMsg(id) {
+  removeApiMsg(id: string) {
     let validations = { ...this.validationsAsync.getValue() };
     delete validations[id];
     if (!validations || validations == undefined) {
@@ -29,15 +29,19 @@ export class ApiMsgValidator implements AsyncValidator {
 
   validate(control: AbstractControl): Observable<ValidationErrors | null> {
     return this.validationsAsync.pipe(
-      map((validations) => {
-        if (control.errors?.backend?.id && validations) {
-          return validations[control.errors?.backend?.id]
+      map((validations: Validations) => {
+        console.log(validations);
+        console.log(control.errors);
+        if (control.errors?.['backend'] && validations) {
+          return validations[control.errors?.['backend']]
             ? {
-                backend: control.errors?.backend?.id,
-                message: control.errors?.backend?.message,
-                async: true,
-              }
-            : null;
+                invalid: true,
+                backend: control.errors?.['backend'],
+                message: control.errors?.['message'],
+                msg_id: control.errors?.['msg_id'],
+                async: true
+              } :
+             null;
         }
         return null;
       }),
