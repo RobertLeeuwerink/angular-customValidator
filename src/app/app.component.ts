@@ -39,6 +39,11 @@ export class AppComponent {
     this.addError(); // this is to simulate a scenario where the back tells something is wrong we want to add that message to the form and keep it there until the conditions are corrected. currently gets cleared when toggling editing mode or when you touch a control field of the forms
   }
 
+  updateUserAsync() {
+    this.newUser = this.form.getRawValue();
+    this.addAsyncError();
+  }
+
   reset() {
     this.form.reset();
     this.newUser = {};

@@ -8,31 +8,34 @@ import { BehaviorSubject, catchError, map, Observable, of } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class ApiMsgValidator implements AsyncValidator {
-  private validations = new BehaviorSubject<any>({});
+  private validationsAsync = new BehaviorSubject<any>({});
 
   constructor() {}
 
   addApiMsg(id, message) {
-    const validations = this.validations.getValue();
+    const validations = { ...this.validationsAsync.getValue() };
     validations[id] = { id, message };
-    this.validations.next(validations);
+    this.validationsAsync.next(validations);
   }
 
   removeApiMsg(id) {
-    const validations = this.validations.getValue();
+    let validations = { ...this.validationsAsync.getValue() };
     delete validations[id];
-    this.validations.next(validations);
+    if (!validations || validations == undefined) {
+      validations = {};
+    }
+    this.validationsAsync.next(validations);
   }
 
   validate(control: AbstractControl): Observable<ValidationErrors | null> {
-    return this.validations.pipe(
+    return this.validationsAsync.pipe(
       map((validations) => {
-        if (control.errors?.backend?.id) {
+        if (control.errors?.backend?.id && validations) {
           return validations[control.errors?.backend?.id]
             ? {
                 backend: control.errors?.backend?.id,
                 message: control.errors?.backend?.message,
-                async: true
+                async: true,
               }
             : null;
         }

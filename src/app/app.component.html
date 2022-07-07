@@ -17,7 +17,7 @@
   </div>
   <div class="btn-toolbar float-right btn-gap">
     <button class="btn btn-info mr-1" (click)="updateUser()">Update</button>
-    <button class="btn btn-info mr-1" (click)="addAsyncError()">
+    <button class="btn btn-info mr-1" (click)="updateUserAsync()">
       Async Update
     </button>
     <button class="btn btn-dark" type="reset" (click)="reset()">Clear</button>
@@ -25,7 +25,10 @@
       {{ (editMode | async) ? 'Stop editing' : 'Edit content' }}
     </button>
     <button
-      *ngIf="form.controls.userName.errors?.backend?.id"
+      *ngIf="
+        form.controls.userName.errors?.backend?.id &&
+        !form.controls.userName.errors?.backend?.async
+      "
       class="btn btn-dark"
       (click)="removeValidator(form.controls.userName.errors?.backend?.id)"
     >
