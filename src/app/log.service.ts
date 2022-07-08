@@ -6,36 +6,32 @@ import { BehaviorSubject, map, Observable, of } from 'rxjs';
   providedIn: 'root',
 })
 export class LogService {
-  errors = new BehaviorSubject<string[]>([]);
-  constructor() {}
+  errors = new BehaviorSubject<{[id: string]: string}>({});
+  constructor() {
+    this.errors.subscribe((errors) => console.log(errors));
+  }
 
   newErrorId(code: string) {
     const timestamp = new Date().getUTCDate() + code;
     return timestamp;
   }
 
-  findError(control: AbstractControl): Observable<boolean> {
-    const value = '';
+  findError$(id: string): Observable<boolean> {
     return this.errors.pipe(
-      map((errors) => {
-        const index = errors.indexOf(value);
-        if (index === -1) {
-          return false;
-        } else {
-          return true;
-        }
-      })
-    );
+      map((errors) => errors?.[id] ? true : false));
+  }
+  findError(id: string): boolean {
+    return !!this.errors.getValue()[id];
   }
 
-  addError(id: string) {
-    const errors = this.errors.getValue();
-    errors.push(id);
+  addError(id: string, message: string) {
+    const errors = {...this.errors.getValue(), [id]: message};
     this.errors.next(errors);
   }
 
   removeError(id: string) {
     const errors = this.errors.getValue();
-    this.errors.next(errors.filter((error) => error !== id));
+    delete errors[id];
+    this.errors.next(errors);
   }
 }

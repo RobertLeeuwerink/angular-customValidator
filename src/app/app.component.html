@@ -24,30 +24,22 @@
     <button class="btn btn-dark" (click)="toggleEditor()">
       {{ (editMode | async) ? 'Stop editing' : 'Edit content' }}
     </button>
-    <button
-      *ngIf="
-        form.controls.userName.errors?.backend?.id &&
-        !form.controls.userName.errors?.backend?.async
-      "
-      class="btn btn-dark"
-      (click)="removeValidator(form.controls.userName.errors?.backend?.id)"
-    >
+    <button 
+    *ngIf="(form.controls.userName.errors?.['validatorFnId'] && !form.controls.userName.errors?.['async'])"
+     class="btn btn-dark" (click)="removeValidator(form.controls.userName.errors?.['validatorFnId'])">
       {{ 'I have read and understood the error, clear error.' }}
     </button>
-    <button
-      *ngIf="form.controls.userName.errors?.backend?.async"
-      class="btn btn-dark"
-      (click)="removeValidator(form.controls.userName.errors?.backend?.id)"
-    >
+    <button *ngIf="form.controls.userName.errors?.['async']" class="btn btn-dark"
+      (click)="removeValidator(form.controls.userName.errors?.['validatorFnId'])">
       {{ 'I have read and understood the async error, clear error.' }}
     </button>
   </div>
 </form>
-<div *ngIf="!!newUser?.userName">
+<div *ngIf="!!form.getRawValue().userName">
   new user:
   <br />
-  <b>First Name:</b> {{ newUser.userName }} <b>Last Name:</b>
-  {{ newUser.userLastName }}
+  <b>First Name:</b> {{ form.getRawValue().userName }} <b>Last Name:</b>
+  {{ form.getRawValue().userLastName }}
 
   <pre>
     {{ form.getRawValue() | json }}
