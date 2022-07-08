@@ -25,12 +25,12 @@
       {{ (editMode | async) ? 'Stop editing' : 'Edit content' }}
     </button>
     <button 
-    *ngIf="(form.controls.userName.errors?.['backend'] && !form.controls.userName.errors?.['async'])"
-     class="btn btn-dark" (click)="removeValidator(form.controls.userName.errors?.['msg_id'])">
+    *ngIf="(form.controls.userName.errors?.['validatorFnId'] && !form.controls.userName.errors?.['async'])"
+     class="btn btn-dark" (click)="removeValidator(form.controls.userName.errors?.['validatorFnId'])">
       {{ 'I have read and understood the error, clear error.' }}
     </button>
     <button *ngIf="form.controls.userName.errors?.['async']" class="btn btn-dark"
-      (click)="removeValidator(form.controls.userName.errors?.['msg_id'])">
+      (click)="removeValidator(form.controls.userName.errors?.['validatorFnId'])">
       {{ 'I have read and understood the async error, clear error.' }}
     </button>
   </div>
